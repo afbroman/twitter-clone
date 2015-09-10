@@ -44,4 +44,4 @@ group :development do
 end
 
 gem 'react-rails'
-
+gem 'devise'
