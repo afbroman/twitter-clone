@@ -6,6 +6,7 @@ export default {
     API.getAllTweets();
   },
   sendTweet(body) {
+    console.log("TweetActions.createTweet");
     API.createTweet(body);
   }
 }

@@ -3,7 +3,6 @@ import TweetActions from "../actions/TweetActions";
 export default class TweetBox extends React.Component {
   sendTweet(event) {
     event.preventDefault();
-    console.log(React.findDOMNode(this.refs.tweetTextArea).value);
     TweetActions.sendTweet(React.findDOMNode(this.refs.tweetTextArea).value);
     React.findDOMNode(this.refs.tweetTextArea).value = '';
   }
