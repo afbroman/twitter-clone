@@ -71,7 +71,7 @@
 	
 	var _componentsIndex2 = _interopRequireDefault(_componentsIndex);
 	
-	var _componentsFollow = __webpack_require__(/*! ./components/Follow */ 214);
+	var _componentsFollow = __webpack_require__(/*! ./components/Follow */ 215);
 	
 	var _componentsFollow2 = _interopRequireDefault(_componentsFollow);
 	
@@ -24157,6 +24157,13 @@
 	    }).error(function (error) {
 	      return console.log(error);
 	    });
+	  },
+	  followUser: function followUser(userId) {
+	    $.post("/followers", { user_id: userId }).success(function (rawFollower) {
+	      return _actionsServerActions2["default"].receivedOneFollower(rawFollower);
+	    }).error(function (error) {
+	      return console.log(error);
+	    });
 	  }
 	};
 	module.exports = exports["default"];
@@ -24201,6 +24208,12 @@
 	    _dispatcher2["default"].dispatch({
 	      actionType: _constants2["default"].RECEIVED_USERS,
 	      rawUsers: rawUsers
+	    });
+	  },
+	  receivedOneFollower: function receivedOneFollower(rawFollower) {
+	    _dispatcher2["default"].dispatch({
+	      actionType: _constants2["default"].RECEIVED_ONE_FOLLOWER,
+	      rawFollower: rawFollower
 	    });
 	  }
 	};
@@ -24560,7 +24573,8 @@
 	exports['default'] = {
 	  RECEIVED_TWEETS: 'RECEIVED_TWEETS',
 	  RECEIVED_ONE_TWEET: 'RECEIVED_ONE_TWEET',
-	  RECEIVED_USERS: 'RECEIVED_USERS'
+	  RECEIVED_USERS: 'RECEIVED_USERS',
+	  RECEIVED_ONE_FOLLOWER: 'RECEIVED_ONE_FOLLOWER'
 	};
 	module.exports = exports['default'];
 
@@ -24729,7 +24743,7 @@
 	
 	var _constants2 = _interopRequireDefault(_constants);
 	
-	var _AppEventEmitter2 = __webpack_require__(/*! ./AppEventEmitter */ 216);
+	var _AppEventEmitter2 = __webpack_require__(/*! ./AppEventEmitter */ 213);
 	
 	var _AppEventEmitter3 = _interopRequireDefault(_AppEventEmitter2);
 	
@@ -24778,6 +24792,63 @@
 
 /***/ },
 /* 213 */
+/*!********************************************************!*\
+  !*** ./app/assets/frontend/stores/AppEventEmitter.jsx ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _events = __webpack_require__(/*! events */ 214);
+	
+	var CHANGE_EVENT = "CHANGE";
+	
+	var AppEventEmitter = (function (_EventEmitter) {
+	  _inherits(AppEventEmitter, _EventEmitter);
+	
+	  function AppEventEmitter() {
+	    _classCallCheck(this, AppEventEmitter);
+	
+	    _get(Object.getPrototypeOf(AppEventEmitter.prototype), "constructor", this).apply(this, arguments);
+	  }
+	
+	  _createClass(AppEventEmitter, [{
+	    key: "emitChange",
+	    value: function emitChange() {
+	      this.emit(CHANGE_EVENT);
+	    }
+	  }, {
+	    key: "addChangeListener",
+	    value: function addChangeListener(callback) {
+	      this.on(CHANGE_EVENT, callback);
+	    }
+	  }, {
+	    key: "removeChangeListener",
+	    value: function removeChangeListener(callback) {
+	      this.removeListener(CHANGE_EVENT, callback);
+	    }
+	  }]);
+	
+	  return AppEventEmitter;
+	})(_events.EventEmitter);
+	
+	exports["default"] = AppEventEmitter;
+	module.exports = exports["default"];
+
+/***/ },
+/* 214 */
 /*!****************************!*\
   !*** ./~/events/events.js ***!
   \****************************/
@@ -25087,7 +25158,7 @@
 
 
 /***/ },
-/* 214 */
+/* 215 */
 /*!***************************************************!*\
   !*** ./app/assets/frontend/components/Follow.jsx ***!
   \***************************************************/
@@ -25113,7 +25184,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _storesUserStore = __webpack_require__(/*! ../stores/UserStore */ 215);
+	var _storesUserStore = __webpack_require__(/*! ../stores/UserStore */ 216);
 	
 	var _storesUserStore2 = _interopRequireDefault(_storesUserStore);
 	
@@ -25155,8 +25226,20 @@
 	      this.setState(getAppState());
 	    }
 	  }, {
+	    key: 'followUser',
+	    value: function followUser(userId) {
+	      _actionsUserActions2['default'].followUser(userId);
+	    }
+	  }, {
+	    key: 'followClasses',
+	    value: function followClasses(following) {
+	      return "secondary-content btn-floating " + (following ? "green" : "grey");
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this = this;
+	
 	      var users = this.state.users.map(function (user) {
 	        return _react2['default'].createElement(
 	          'li',
@@ -25166,6 +25249,16 @@
 	            'span',
 	            { className: 'title' },
 	            user.name
+	          ),
+	          _react2['default'].createElement(
+	            'a',
+	            { className: _this.followClasses(user.following),
+	              onClick: _this.followUser.bind(_this, user.id) },
+	            _react2['default'].createElement(
+	              'i',
+	              { className: 'material-icons' },
+	              'person_pin'
+	            )
 	          )
 	        );
 	      });
@@ -25198,7 +25291,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 215 */
+/* 216 */
 /*!**************************************************!*\
   !*** ./app/assets/frontend/stores/UserStore.jsx ***!
   \**************************************************/
@@ -25228,11 +25321,12 @@
 	
 	var _constants2 = _interopRequireDefault(_constants);
 	
-	var _AppEventEmitter2 = __webpack_require__(/*! ./AppEventEmitter */ 216);
+	var _AppEventEmitter2 = __webpack_require__(/*! ./AppEventEmitter */ 213);
 	
 	var _AppEventEmitter3 = _interopRequireDefault(_AppEventEmitter2);
 	
 	var _users = [];
+	var _followedIds = [];
 	
 	var UserEventEmitter = (function (_AppEventEmitter) {
 	  _inherits(UserEventEmitter, _AppEventEmitter);
@@ -25246,7 +25340,10 @@
 	  _createClass(UserEventEmitter, [{
 	    key: "getAll",
 	    value: function getAll() {
-	      return _users;
+	      return _users.map(function (user) {
+	        user.following = _followedIds.indexOf(user.id) >= 0;
+	        return user;
+	      });
 	    }
 	  }]);
 	
@@ -25261,68 +25358,15 @@
 	      _users = action.rawUsers;
 	      UserStore.emitChange();
 	      break;
+	    case _constants2["default"].RECEIVED_ONE_FOLLOWER:
+	      _followedIds.push(action.rawFollower.user_id);
+	      UserStore.emitChange();
+	      break;
 	    default:
 	  }
 	});
 	
 	exports["default"] = UserStore;
-	module.exports = exports["default"];
-
-/***/ },
-/* 216 */
-/*!********************************************************!*\
-  !*** ./app/assets/frontend/stores/AppEventEmitter.jsx ***!
-  \********************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _events = __webpack_require__(/*! events */ 213);
-	
-	var CHANGE_EVENT = "CHANGE";
-	
-	var AppEventEmitter = (function (_EventEmitter) {
-	  _inherits(AppEventEmitter, _EventEmitter);
-	
-	  function AppEventEmitter() {
-	    _classCallCheck(this, AppEventEmitter);
-	
-	    _get(Object.getPrototypeOf(AppEventEmitter.prototype), "constructor", this).apply(this, arguments);
-	  }
-	
-	  _createClass(AppEventEmitter, [{
-	    key: "emitChange",
-	    value: function emitChange() {
-	      this.emit(CHANGE_EVENT);
-	    }
-	  }, {
-	    key: "addChangeListener",
-	    value: function addChangeListener(callback) {
-	      this.on(CHANGE_EVENT, callback);
-	    }
-	  }, {
-	    key: "removeChangeListener",
-	    value: function removeChangeListener(callback) {
-	      this.removeListener(CHANGE_EVENT, callback);
-	    }
-	  }]);
-	
-	  return AppEventEmitter;
-	})(_events.EventEmitter);
-	
-	exports["default"] = AppEventEmitter;
 	module.exports = exports["default"];
 
 /***/ },
@@ -25347,6 +25391,9 @@
 	exports["default"] = {
 	  getAllUsers: function getAllUsers() {
 	    _API2["default"].getAllUsers();
+	  },
+	  followUser: function followUser(userId) {
+	    _API2["default"].followUser(userId);
 	  }
 	};
 	module.exports = exports["default"];
