@@ -13,7 +13,7 @@ export default class Follow extends React.Component {
   render() {
     let users = this.state.users.map( user => {
       return (
-        <li className="collection-item avatar">
+        <li key={user.id} className="collection-item avatar">
           <img src={user.gravatar} className="circle" />
           <span className="title">{user.name}</span>
         </li>
