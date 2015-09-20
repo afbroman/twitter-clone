@@ -20003,8 +20003,6 @@
 	
 	var _actionsTweetActions2 = _interopRequireDefault(_actionsTweetActions);
 	
-	_actionsTweetActions2['default'].getAllTweets();
-	
 	var getAppState = function getAppState() {
 	  return { tweetsList: _storesTweetStore2['default'].getAll() };
 	};
@@ -20023,6 +20021,7 @@
 	  _createClass(Index, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      _actionsTweetActions2['default'].getAllTweets();
 	      _storesTweetStore2['default'].addChangeListener(this._onChange);
 	    }
 	  }, {
