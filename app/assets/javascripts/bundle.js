@@ -24150,6 +24150,13 @@
 	    }).error(function (error) {
 	      return console.log(error);
 	    });
+	  },
+	  getAllUsers: function getAllUsers() {
+	    $.get("/followers/random").success(function (rawUsers) {
+	      return _actionsServerActions2["default"].receivedUsers(rawUsers);
+	    }).error(function (error) {
+	      return console.log(error);
+	    });
 	  }
 	};
 	module.exports = exports["default"];
@@ -24188,6 +24195,12 @@
 	    _dispatcher2["default"].dispatch({
 	      actionType: _constants2["default"].RECEIVED_ONE_TWEET,
 	      rawTweet: rawTweet
+	    });
+	  },
+	  receivedUsers: function receivedUsers(rawUsers) {
+	    _dispatcher2["default"].dispatch({
+	      actionType: _constants2["default"].RECEIVED_USERS,
+	      rawUsers: rawUsers
 	    });
 	  }
 	};
@@ -24546,7 +24559,8 @@
 	});
 	exports['default'] = {
 	  RECEIVED_TWEETS: 'RECEIVED_TWEETS',
-	  RECEIVED_ONE_TWEET: 'RECEIVED_ONE_TWEET'
+	  RECEIVED_ONE_TWEET: 'RECEIVED_ONE_TWEET',
+	  RECEIVED_USERS: 'RECEIVED_USERS'
 	};
 	module.exports = exports['default'];
 
@@ -25103,6 +25117,12 @@
 	
 	var _storesUserStore2 = _interopRequireDefault(_storesUserStore);
 	
+	var _actionsUserActions = __webpack_require__(/*! ../actions/UserActions */ 217);
+	
+	var _actionsUserActions2 = _interopRequireDefault(_actionsUserActions);
+	
+	var _reactRouter = __webpack_require__(/*! react-router */ 159);
+	
 	var getAppState = function getAppState() {
 	  return { users: _storesUserStore2['default'].getAll() };
 	};
@@ -25115,9 +25135,26 @@
 	
 	    _get(Object.getPrototypeOf(Follow.prototype), 'constructor', this).call(this, props);
 	    this.state = getAppState();
+	    this._onChange = this._onChange.bind(this);
 	  }
 	
 	  _createClass(Follow, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      _actionsUserActions2['default'].getAllUsers();
+	      _storesUserStore2['default'].addChangeListener(this._onChange);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _storesUserStore2['default'].removeChangeListener(this._onChange);
+	    }
+	  }, {
+	    key: '_onChange',
+	    value: function _onChange() {
+	      this.setState(getAppState());
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var users = this.state.users.map(function (user) {
@@ -25144,6 +25181,11 @@
 	          'ul',
 	          { className: 'collection' },
 	          users
+	        ),
+	        _react2['default'].createElement(
+	          _reactRouter.Link,
+	          { to: '/' },
+	          'Back'
 	        )
 	      );
 	    }
@@ -25190,7 +25232,7 @@
 	
 	var _AppEventEmitter3 = _interopRequireDefault(_AppEventEmitter2);
 	
-	var _users = [{ id: 1, name: "Jasper" }, { id: 2, name: "Giso" }];
+	var _users = [];
 	
 	var UserEventEmitter = (function (_AppEventEmitter) {
 	  _inherits(UserEventEmitter, _AppEventEmitter);
@@ -25215,6 +25257,10 @@
 	
 	_dispatcher2["default"].register(function (action) {
 	  switch (action.actionType) {
+	    case _constants2["default"].RECEIVED_USERS:
+	      _users = action.rawUsers;
+	      UserStore.emitChange();
+	      break;
 	    default:
 	  }
 	});
@@ -25277,6 +25323,32 @@
 	})(_events.EventEmitter);
 	
 	exports["default"] = AppEventEmitter;
+	module.exports = exports["default"];
+
+/***/ },
+/* 217 */
+/*!*****************************************************!*\
+  !*** ./app/assets/frontend/actions/UserActions.jsx ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	
+	var _API = __webpack_require__(/*! ../API */ 203);
+	
+	var _API2 = _interopRequireDefault(_API);
+	
+	exports["default"] = {
+	  getAllUsers: function getAllUsers() {
+	    _API2["default"].getAllUsers();
+	  }
+	};
 	module.exports = exports["default"];
 
 /***/ }
