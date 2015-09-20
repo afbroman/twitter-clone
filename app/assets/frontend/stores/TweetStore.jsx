@@ -19,7 +19,6 @@ AppDispatcher.register( action => {
   switch(action.actionType) {
     case ActionTypes.RECEIVED_TWEETS:
       _tweets = action.rawTweets;
-      console.log(_tweets);
       TweetStore.emitChange();
       break;
     case ActionTypes.RECEIVED_ONE_TWEET:

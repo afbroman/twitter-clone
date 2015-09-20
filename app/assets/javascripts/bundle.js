@@ -20023,7 +20023,6 @@
 	  _createClass(Index, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      console.log("componentDidMount");
 	      _storesTweetStore2['default'].addChangeListener(this._onChange);
 	    }
 	  }, {
@@ -20034,7 +20033,6 @@
 	  }, {
 	    key: '_onChange',
 	    value: function _onChange() {
-	      console.log(5, "Main._onChange");
 	      this.setState(getAppState());
 	    }
 	  }, {
@@ -24111,11 +24109,9 @@
 	
 	exports["default"] = {
 	  getAllTweets: function getAllTweets() {
-	    console.log(1, "TweetActions.getAllTweets");
 	    _API2["default"].getAllTweets();
 	  },
 	  sendTweet: function sendTweet(body) {
-	    console.log("TweetActions.createTweet");
 	    _API2["default"].createTweet(body);
 	  }
 	};
@@ -24142,7 +24138,6 @@
 	
 	exports["default"] = {
 	  getAllTweets: function getAllTweets() {
-	    console.log(2, "API.getAllTweets");
 	    $.get("/tweets").success(function (rawTweets) {
 	      return _actionsServerActions2["default"].receivedTweets(rawTweets);
 	    }).error(function (error) {
@@ -24184,14 +24179,12 @@
 	
 	exports["default"] = {
 	  receivedTweets: function receivedTweets(rawTweets) {
-	    console.log(3, "ServerActions.receivedTweets");
 	    _dispatcher2["default"].dispatch({
 	      actionType: _constants2["default"].RECEIVED_TWEETS,
 	      rawTweets: rawTweets
 	    });
 	  },
 	  receivedOneTweet: function receivedOneTweet(rawTweet) {
-	    console.log("ServerActions.receivedOneTweet");
 	    _dispatcher2["default"].dispatch({
 	      actionType: _constants2["default"].RECEIVED_ONE_TWEET,
 	      rawTweet: rawTweet
@@ -24756,7 +24749,6 @@
 	  switch (action.actionType) {
 	    case _constants2["default"].RECEIVED_TWEETS:
 	      _tweets = action.rawTweets;
-	      console.log(_tweets);
 	      TweetStore.emitChange();
 	      break;
 	    case _constants2["default"].RECEIVED_ONE_TWEET:
@@ -25131,7 +25123,7 @@
 	      var users = this.state.users.map(function (user) {
 	        return _react2['default'].createElement(
 	          'li',
-	          { className: 'collection-item avatar' },
+	          { key: user.id, className: 'collection-item avatar' },
 	          _react2['default'].createElement('img', { src: user.gravatar, className: 'circle' }),
 	          _react2['default'].createElement(
 	            'span',
@@ -25198,7 +25190,7 @@
 	
 	var _AppEventEmitter3 = _interopRequireDefault(_AppEventEmitter2);
 	
-	var _users = [];
+	var _users = [{ id: 1, name: "Jasper" }, { id: 2, name: "Giso" }];
 	
 	var UserEventEmitter = (function (_AppEventEmitter) {
 	  _inherits(UserEventEmitter, _AppEventEmitter);

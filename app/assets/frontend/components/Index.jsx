@@ -18,14 +18,12 @@ export default class Index extends React.Component {
     this._onChange = this._onChange.bind(this);
   }
   componentDidMount() {
-    console.log("componentDidMount");
     TweetStore.addChangeListener(this._onChange);
   }
   componentWillUnmount() {
     TweetStore.removeChangeListener(this._onChange);
   }
   _onChange() {
-    console.log(5, "Main._onChange");
     this.setState(getAppState());
   }
   render() {
